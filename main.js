@@ -42,9 +42,29 @@ const inicializarfiltros = () => {
   $('#toggle-filtros').addEventListener('click', alternarFiltros);
 };
 
+// Muestra y oculta los paneles
+const mostrarVista = (nombre) => {
+  const vistas = $$('.vista')
+
+  for (let vista of vistas) {
+    vista.classList.add('hidden')
+  }
+
+  $(`#vista-${nombre}`).classList.remove('hidden')
+}
+
+// Inicializador vistas
+const inicializarVistas = () => {
+  $('#ver-operacion').addEventListener('click', () => mostrarVista('operacion'));
+  $('#cancelar-operacion').addEventListener('click', () => mostrarVista('balance'))
+
+  $('#mostrar-balance').addEventListener('click', () => mostrarVista('balance'))
+};
+
 // Inicializador de todos los eventos
 const inicializar = () => {
   inicializarfiltros();
+  inicializarVistas()
 };
 
 window.onload = inicializar;
