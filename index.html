@@ -49,9 +49,90 @@
             </a>
         </div>
     </header>
-    <main>
 
-    </main>
+    <!-- BALANCE-->
+<section class="mt-20" id="vista-balance">
+    <div class="container mx-auto">
+      <div class="flex flex-wrap justify-center -mx-4 ml-2 mr-2">
+        <div class="w-full md:w-1/3 lg:w-1/4 px-4 mb-4">
+            <div class="p-6 bg-white shadow-lg shadow-purple-500/50 rounded-lg">
+                <h2 class="text-2xl font-bold mb-6">Balance</h2>
+                <div class="flex justify-between mb-4">
+                  <div class="text-lg">Ganancias</div>
+                  <div class="text-lg text-green-500">+$0</div>
+                </div>
+                <div class="flex justify-between mb-4">
+                  <div class="text-lg">Gastos</div>
+                  <div class="text-lg text-red-500">+$0</div>
+                </div>
+                <div class="flex justify-between">
+                  <div class="text-xl">Total</div>
+                  <div class="text-xl font-bold">$0</div>
+                </div>
+              </div>
+              <!-- filtros -->
+              <div class="p-6 bg-white shadow-lg shadow-purple-500/50 rounded-lg mt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Filtros</h3>
+                    <a href="#" id="toggle-filtros" class="text-blue-500 hover:text-purple-600">Ocultar filtros</a>
+                </div>
+                <div id="filtros">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">Tipo</label>
+                        <select id="filtro-tipo" class="block w-full px-3 py-2 border rounded-md border-purple-400 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                            <option value="TODOS">Todos</option>
+                            <option value="GASTO">Gasto</option>
+                            <option value="GANANCIA">Ganancia</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">Categoría</label>
+                        <select class="block w-full px-3 py-2 border rounded-md border-purple-400 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                            <option>Servicios</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">Desde</label>
+                        <input type="date" class="block w-full px-3 py-2 border rounded-md border-purple-400 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">Ordenar por</label>
+                        <select class="block w-full px-3 py-2 border rounded-md border-purple-400 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                            <option value="MAS_RECIENTES">Más reciente</option>
+                            <option value="MENOS_RECIENTES">Menos reciente</option>
+                            <option value="MAYOR_MONTO">Mayor monto</option>
+                            <option value="MENOR_MONTO">Menor monto</option>
+                            <option value="A/Z">A/Z</option>
+                            <option value="Z/A">Z/A</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- operaciones -->
+        <div class="w-full md:w-2/3 lg:w-1/2 px-4 mb-4">
+            <div class="p-6 bg-white shadow-lg shadow-purple-500/50 rounded-lg">
+              <div class="flex flex-col items-start md:flex-row md:justify-between md:items-center mb-4">
+                <h3 class="text-xl font-bold">Operaciones</h3>
+                <button 
+                  type="button" 
+                  class="mt-2 md:mt-0 px-4 py-2 text-sm md:text-base lg:text-lg bg-purple-400 text-white rounded-md hover:bg-purple-600 min-w-[150px] md:w-auto"
+                  id="ver-operacion">
+                  + Nueva operación
+                </button>
+              </div>
+              <div class="my-6 py-6 text-center" id="sin-operaciones">
+                <figure class="mx-auto">
+                  <img src="img/Wallet.png" alt="" class="w-2/4 h-2/4 object-contain mx-auto" />
+                </figure>
+                <h4 class="text-xl font-semibold mt-6 mb-4">Sin resultados</h4>
+                <p>Cambia los filtros o agrega operaciones</p>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
     <script src="main.js"></script>
 </body>
 </html>
