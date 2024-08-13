@@ -24,7 +24,7 @@
 
             <!-- Menú de navegación -->
             <div id="menu" class="hidden lg:flex pr-8 w-auto gap-x-10">
-                <a href="#" class="p-2 text-purple-100 rounded-lg text-lg transition duration-300 ease-in-out font-medium font-serif hover:bg-purple-600">
+                <a href="#" id="mostrar-balance" class="p-2 text-purple-100 rounded-lg text-lg transition duration-300 ease-in-out font-medium font-serif hover:bg-purple-600">
                     <i class="fa fa-solid fa-chart-line mr-1.5"></i>Balance
                 </a>
                 <a href="#" class="p-2 text-purple-100 rounded-lg text-lg transition duration-300 ease-in-out font-medium font-serif hover:bg-purple-600">
@@ -38,7 +38,11 @@
 
         <!-- Menú hamburguesa para pantallas pequeñas -->
         <div id="mobile-menu" class="hidden lg:hidden bg-purple-400">
+<<<<<<< HEAD
+            <a href="#" id="mostrar-balance" class="block p-3 text-base lg:text-lg text-purple-100 font-medium font-serif hover:bg-purple-600">
+=======
             <a href="#" class="block p-3 text-base lg:text-lg text-purple-100 font-medium font-serif transition duration-300 ease-in-out hover:bg-purple-600">
+>>>>>>> main
                 <i class="fa fa-solid fa-chart-line mr-1"></i>Balance
             </a>
             <a href="#" class="block p-3 text-base lg:text-lg text-purple-100 font-medium font-serif transition duration-300 ease-in-out hover:bg-purple-600">
@@ -51,7 +55,7 @@
     </header>
 
     <!-- BALANCE-->
-<section class="mt-20" id="vista-balance">
+<section class="mt-20 vista" id="vista-balance">
     <div class="container mx-auto">
       <div class="flex flex-wrap justify-center -mx-4 ml-2 mr-2">
         <div class="w-full md:w-1/3 lg:w-1/4 px-4 mb-4">
@@ -133,6 +137,52 @@
       </div>
     </div>
   </section>
+<!-- ****************** AGREGAR OPERACION ********* -->
+<section class="mt-20 vista hidden" id="vista-operacion">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap justify-center -mx-4">
+      <div class="w-full lg:w-2/3 xl:w-1/2 px-4">
+        <div class="bg-white p-6 rounded-lg shadow-lg shadow-purple-500/50">
+          <h2 class="text-2xl font-bold mb-6">Nueva operación</h2>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2 text-gray-700">Descripción</label>
+            <input class="block w-full border border-purple-400 rounded-md py-2 px-3 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300" type="text"/>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2 text-gray-700">Monto</label>
+            <input class="block w-full border border-purple-400 rounded-md py-2 px-3 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300" type="number" value="0"/>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2 text-gray-700">Tipo</label>
+            <select class="block w-full border border-purple-400 rounded-md py-2 px-3 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300">
+              <option value="GASTO">Gasto</option>
+              <option value="GANANCIA">Ganancia</option>
+            </select>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2 text-gray-700">Categoría</label>
+            <select
+              class="block w-full border border-purple-400 rounded-md py-2 px-3 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300">
+              <option>Servicios</option>
+            </select>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2 text-gray-700">Fecha</label>
+            <input class="block w-full border border-purple-400 rounded-md py-2 px-3 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300" type="date"/>
+          </div>
+          <div class="flex space-x-4">
+            <button class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300" id="cancelar-operacion">
+              Cancelar
+            </button>
+            <button class="bg-purple-400 text-white py-2 px-4 rounded-md hover:bg-purple-600" id="agregar-operacion">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
     <script src="main.js"></script>
 </body>
 </html>
