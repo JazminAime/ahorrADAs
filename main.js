@@ -50,12 +50,14 @@ const inicializar = () => {
 window.onload = inicializar;
 
 // VISIBILIDIDAD DE PANELES BALANCE - CATEGORIAS - EDITAR CATEGORIAS - REPORTES 
+// Referencias a los elementos de las secciones
 const balance = document.getElementById('vista-balance');
 const categorias = document.getElementById('vista-categorias');
 const reportes = document.getElementById('vista-reportes');
 const editCategoria = document.getElementById('edit-categorias');
 const vistaOperacion = document.getElementById('vista-operacion');
 
+// Referencia a los botones del menú de escritorio
 const mostrarBalance = document.getElementById('mostrar-balance');
 const mostrarCategorias = document.getElementById('mostrar-categorias');
 const mostrarReportes = document.getElementById('mostrar-reportes');
@@ -63,6 +65,11 @@ const mostrarEditar = document.getElementById('btn-editar');
 const mostrarOperacion = document.getElementById('ver-operacion');
 const cancelarOperacion = document.getElementById('cancelar-operacion');
 const cancelarEdit = document.getElementById('cancelar-edit');
+
+// Referencias a los botones del menú móvil
+const mostrarBalanceMobile = document.getElementById('mostrar-balance-mobile');
+const mostrarCategoriasMobile = document.getElementById('mostrar-categorias-mobile');
+const mostrarReportesMobile = document.getElementById('mostrar-reportes-mobile');
 
 function mostrarSeccion(section) {
   balance.classList.add('hidden');
@@ -73,6 +80,8 @@ function mostrarSeccion(section) {
 
   section.classList.remove('hidden');
 }
+
+// Menu escritorio eventos
 
 mostrarBalance.addEventListener('click', function() {
   mostrarSeccion(balance);
@@ -93,6 +102,22 @@ mostrarEditar.addEventListener('click', function(){
 mostrarOperacion.addEventListener('click', function(){
   mostrarSeccion(vistaOperacion);
 });
+
+// Menu movil eventos
+
+mostrarBalanceMobile.addEventListener('click', function() {
+  mostrarSeccion(balance);
+});
+
+mostrarCategoriasMobile.addEventListener('click', function() {
+  mostrarSeccion(categorias);
+});
+
+mostrarReportesMobile.addEventListener('click', function() {
+  mostrarSeccion(reportes);
+});
+
+// Cancelar operaciones
 
 cancelarOperacion.addEventListener('click', function(){
   mostrarSeccion(balance);
