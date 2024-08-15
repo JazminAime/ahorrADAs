@@ -102,4 +102,28 @@ cancelarEdit.addEventListener('click', function(){
   mostrarSeccion(categorias);
 });
 
+// VISIBILIDAD DE PANELES EN MOBILE
+const mostrarBalanceMobile = document.getElementById('mostrar-balance-mobile');
+const mostrarCategoriasMobile = document.getElementById('mostrar-categorias-mobile');
+const mostrarReportesMobile = document.getElementById('mostrar-reportes-mobile');
+
+function mostrarSeccion(section) {
+  balance.classList.add('hidden');
+  categorias.classList.add('hidden');
+  reportes.classList.add('hidden');
+
+  section.classList.remove('hidden');
+}
+
+mostrarBalanceMobile.addEventListener('click', function() {
+  mostrarSeccion(balance);
+});
+
+mostrarCategoriasMobile.addEventListener('click', function() {
+  mostrarSeccion(categorias);
+});
+
+mostrarReportesMobile.addEventListener('click', function() {
+  mostrarSeccion(reportes);
+});
 
