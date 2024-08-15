@@ -27,10 +27,10 @@
                 <a href="#" id="mostrar-balance" class="p-2 text-purple-100 rounded-lg text-lg transition duration-300 ease-in-out font-medium font-serif hover:bg-purple-600">
                     <i class="fa fa-solid fa-chart-line mr-1.5"></i>Balance
                 </a>
-                <a href="#" class="p-2 text-purple-100 rounded-lg text-lg transition duration-300 ease-in-out font-medium font-serif hover:bg-purple-600">
+                <a href="#" id="mostrar-categorias" class="p-2 text-purple-100 rounded-lg text-lg transition duration-300 ease-in-out font-medium font-serif hover:bg-purple-600">
                     <i class="fa fa-solid fa-tag mr-1.5"></i>Categorías
                 </a>
-                <a href="#" class="p-2 text-purple-100 rounded-lg transition duration-300 ease-in-out text-lg font-medium font-serif hover:bg-purple-600">
+                <a href="#" id="mostrar-reportes" class="p-2 text-purple-100 rounded-lg transition duration-300 ease-in-out text-lg font-medium font-serif hover:bg-purple-600">
                     <i class="fa fa-solid fa-chart-pie mr-1.5"></i>Reportes
                 </a>
             </div>
@@ -41,10 +41,10 @@
             <a href="#" id="mostrar-balance" class="block p-3 text-base lg:text-lg text-purple-100 font-medium font-serif transition duration-300 ease-in-out hover:bg-purple-600">
                 <i class="fa fa-solid fa-chart-line mr-1"></i>Balance
             </a>
-            <a href="#" class="block p-3 text-base lg:text-lg text-purple-100 font-medium font-serif transition duration-300 ease-in-out hover:bg-purple-600">
+            <a href="#" id="mostrar-categorias" class="block p-3 text-base lg:text-lg text-purple-100 font-medium font-serif transition duration-300 ease-in-out hover:bg-purple-600">
                 <i class="fa fa-solid fa-tag mr-1"></i>Categorías
             </a>
-            <a href="#" class="block p-3 text-base lg:text-lg text-purple-100 font-medium font-serif transition duration-300 ease-in-out hover:bg-purple-600">
+            <a href="#" id="mostrar-reportes" class="block p-3 text-base lg:text-lg text-purple-100 font-medium font-serif transition duration-300 ease-in-out hover:bg-purple-600">
                 <i class="fa fa-solid fa-chart-pie mr-1"></i>Reportes
             </a>
         </div>
@@ -179,6 +179,56 @@
     </div>
   </div>
 </section>
+
+<!-- CATEGORIAS -->
+<section id="vista-categorias" class="hidden flex items-center justify-center pt-20">
+    <div class="w-full md:w-2/3 lg:w-1/2 container bg-white rounded-lg shadow-lg shadow-purple-500/50 p-8">
+        <p class="text-4xl font-bold mb-10">Categorías</p>
+        <div>
+            <label for="categoria-nombre" class="text-lg font-bold">
+                Nombre
+            </label>
+        <div class="flex justify-between mt-2 mb-12 items-center">
+            <input type="text" name="categoria-nombre" id="categoria-nombre" class="mr-2 w-10/12 border border-purple-400 rounded-md py-2 px-3 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300">
+            <button class="px-3 py-2 text-sm md:text-base lg:text-lg bg-purple-400 text-white rounded-md transition hover:bg-purple-600">Agregar</button>
+        </div>
+        </div>
+        <div class="flex justify-between">
+        <div>
+            <p class="bg-purple-100 text-purple-600 p-2 rounded-lg">Trabajo</p>
+        </div>
+        <div class="mt-2">
+            <a href="#" id="btn-editar" class="mx-3 text-purple-600 hover:text-black">Editar</a>
+            <a href="#" class="text-purple-600 hover:text-black">Eliminar</a>
+        </div>
+        </div>
+    </div>
+</section>
+
+    <!-- EDITAR CATEGORIAS -->
+     <section id="edit-categorias" class="hidden flex items-center justify-center pt-20">
+     <div id="editar-categoria" class="w-full md:w-2/3 lg:w-1/2 flex flex-col w-6/12 bg-white rounded-lg shadow-lg shadow-purple-500/50 p-8">
+        <p class="text-4xl font-bold mb-10">Editar categoría</p>
+        <label for="nombre" class="mb-3 text-lg font-bold">Nombre</label>
+        <input type="text" name="nombre-categoria" id="editar-categoria-nombre" class="w-full border border-purple-400 rounded-md py-2 px-3 mb-5 focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300">
+        <div class="flex justify-end">
+            <button id="cancelar-edit" class="mx-3 bg-gray-200 p-3 rounded-lg transition hover:bg-gray-300">Cancelar</button>
+            <button class="bg-purple-400 p-3 rounded-lg text-white transition hover:bg-purple-600">Editar</button>
+        </div>
+     </div>
+    </section>
+</section>
+<!-- REPORTES -->
+ <section id="vista-reportes" class="hidden flex items-center justify-center pt-20">
+    <div class="w-full md:w-2/3 lg:w-1/2 flex flex-col bg-white rounded-lg shadow-lg shadow-purple-500/50 p-8 mb-10">
+        <p class="text-4xl font-bold">Reportes</p>
+        <figure>
+            <img src="./img/report.png" alt="reportes-section-img" class="">
+        </figure>
+        <p class="mb-3 text-3xl text-center font-medium">Operaciones insuficientes</p>
+        <p class="mb-4 text-lg text-center">Prueba agregando más operaciones</p>
+    </div>
+ </section>
     <script src="main.js"></script>
 </body>
 </html>
