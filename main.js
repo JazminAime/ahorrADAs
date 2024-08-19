@@ -16,38 +16,24 @@ menuButton.addEventListener('click', () => {
     }
 });
 
+//ocultar y mostrar el panel de filtros
+const filtros = document.getElementById('filtros');
+const toggleFiltros = document.getElementById('toggle-filtros');
 
-//---------- DOM-----------------------------------
-$ = (selector) => document.querySelector(selector)
-$$ = (selector) => document.querySelectorAll(selector)
-//------------------------------------------------------
-
-
-// Mostrar y ocultar filtros
-const alternarFiltros = () => {
-  const toggle = $('#toggle-filtros');
-  const filtros = $('#filtros');
-
+// Función para alternar la visibilidad de los filtros
+function alternarFiltros() {
   if (filtros.classList.contains('hidden')) {
-      toggle.innerText = 'Ocultar filtros';
+      toggleFiltros.innerText = 'Ocultar filtros';
       filtros.classList.remove('hidden');
   } else {
-      toggle.innerText = 'Mostrar filtros';
+      toggleFiltros.innerText = 'Mostrar filtros';
       filtros.classList.add('hidden');
   }
-};
+}
 
-// Inicializador 
-const inicializarfiltros = () => {
-  $('#toggle-filtros').addEventListener('click', alternarFiltros);
-};
-
-// Inicializador de todos los eventos
-const inicializar = () => {
-  inicializarfiltros();
-};
-
-window.onload = inicializar;
+toggleFiltros.addEventListener('click', function() {
+  alternarFiltros(balance);
+});
 
 // VISIBILIDIDAD DE PANELES BALANCE - CATEGORIAS - EDITAR CATEGORIAS - REPORTES 
 // Referencias a los elementos de las secciones
