@@ -52,7 +52,7 @@ window.onload = inicializar;
 // VISIBILIDIDAD DE PANELES BALANCE - CATEGORIAS - EDITAR CATEGORIAS - REPORTES 
 // Referencias a los elementos de las secciones
 const balance = document.getElementById('vista-balance');
-const categorias = document.getElementById('vista-categorias');
+const categoriasSec = document.getElementById('vista-categorias');
 const reportes = document.getElementById('vista-reportes');
 const editCategoria = document.getElementById('edit-categorias');
 const vistaOperacion = document.getElementById('vista-operacion');
@@ -73,7 +73,7 @@ const mostrarReportesMobile = document.getElementById('mostrar-reportes-mobile')
 
 function mostrarSeccion(section) {
   balance.classList.add('hidden');
-  categorias.classList.add('hidden');
+  categoriasSec.classList.add('hidden');
   reportes.classList.add('hidden');
   editCategoria.classList.add('hidden');
   vistaOperacion.classList.add('hidden');
@@ -86,15 +86,12 @@ function mostrarSeccion(section) {
 mostrarBalance.addEventListener('click', function() {
   mostrarSeccion(balance);
 });
-
 mostrarCategorias.addEventListener('click', function() {
-  mostrarSeccion(categorias);
+  mostrarSeccion(categoriasSec);
 });
-
 mostrarReportes.addEventListener('click', function() {
   mostrarSeccion(reportes);
 });
-
 mostrarOperacion.addEventListener('click', function(){
   mostrarSeccion(vistaOperacion);
 });
@@ -104,25 +101,20 @@ mostrarOperacion.addEventListener('click', function(){
 mostrarBalanceMobile.addEventListener('click', function() {
   mostrarSeccion(balance);
 });
-
 mostrarCategoriasMobile.addEventListener('click', function() {
-  mostrarSeccion(categorias);
+  mostrarSeccion(categoriasSec);
 });
-
 mostrarReportesMobile.addEventListener('click', function() {
   mostrarSeccion(reportes);
 });
 
 // Cancelar operaciones
-
 cancelarOperacion.addEventListener('click', function(){
   mostrarSeccion(balance);
 });
-
 cancelarEdit.addEventListener('click', function(){
-  mostrarSeccion(categorias);
+  mostrarSeccion(categoriasSec);
 });
-
 
 // Agregar, editar y eliminar categorias
 const inputAggCategorias = document.getElementById('categoria-nombre');
@@ -178,14 +170,22 @@ function mostrarCategoria () {
 
       editButton.addEventListener('click', function(){
         mostrarSeccion(editCategoria);
+        const nombreCategoriaExistente = categorias[i];
         const editarCategoriaInput = document.getElementById('editar-categoria-nombre');
-        editarCategoriaInput.value = categorias[i];
+        editarCategoriaInput.value = nombreCategoriaExistente;
 
         const confirmarEditar = document.getElementById('confirm-edit');
         confirmarEditar.addEventListener('click', function(){
-          const nuevaCategoria = editarCategoriaInput.value;
-        })
-      })
+         const nuevoNombre = editarCategoriaInput.value;
+
+         if (nuevoNombre !== '') {
+          categorias[i] = nuevoNombre;
+          localStorage.setItem('categorias', JSON.stringify(categorias));
+          mostrarCategoria();
+          mostrarSeccion(categoriasSec);
+      }
+    })
+  })
 
       buttonContainer.appendChild(editButton);
 
@@ -195,6 +195,12 @@ function mostrarCategoria () {
       deleteButton.href = '#';
       deleteButton.textContent = 'Eliminar';
       buttonContainer.appendChild(deleteButton);
+
+      deleteButton.addEventListener('click', function(){
+        categorias.splice(i, 1);
+        localStorage.setItem('categorias', JSON.stringify(categorias));
+        mostrarCategoria();
+      })
 
       // Añadir contenedor de botones al contenedor principal
       categoriaContainer.appendChild(buttonContainer);
