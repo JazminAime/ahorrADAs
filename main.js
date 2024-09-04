@@ -234,3 +234,74 @@ function mostrarCategoria() {
 buttonAggCategorias.addEventListener("click", agregarCategorias);
 
 window.onload = mostrarCategoria;
+
+// Agregar, editar y eliminar operaciones
+function agregarOperacion() {
+  const descripcionOperacion = document.getElementById(
+    "descripcion-operacion"
+  ).value;
+  const montoOperacion = document.getElementById("monto-operacion").value;
+  const tipoOperacion = document.getElementById("tipo-operacion").value;
+  const categoriaOperacion = document.getElementById(
+    "select-categoria-operacion"
+  );
+  const fechaOperacion = document.getElementById("fecha-operacion").value;
+
+  const operacion = {
+    descripcionOperacion,
+    montoOperacion,
+    tipoOperacion,
+    categoriaOperacion,
+    fechaOperacion,
+  };
+
+  let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+
+  operaciones.push(operacion);
+
+  localStorage.setItem("operaciones", JSON.stringify(operaciones));
+
+  mostrarOperaciones();
+
+  // Limpiar campos
+  document.getElementById("descripcion-operacion").value = "";
+  document.getElementById("monto-operacion").value = "";
+  document.getElementById("tipo-operacion").value = "";
+  document.getElementById("categoria-operacion").value = "";
+  document.getElementById("fecha-operacion").value = "";
+}
+
+function mostrarOperaciones() {
+  const sinOperaciones = document.getElementById("sin-operaciones");
+  const imgOperacion = document.getElementById("img-operacion");
+  const contenedorOperaciones = document.getElementById(
+    "operaciones-agg-contenedor"
+  );
+
+  let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+
+  contenedorOperaciones.innerHTML = "";
+
+  if (operaciones.length > 0) {
+    imgOperacion.style.display = "none";
+    sinOperaciones.style.display = "none";
+
+    const tablaOperaciones = document.createElement("div");
+    tablaOperaciones.className = "";
+
+    const titulos = ["Descripción", "Categoría", "Fecha", "Monto", "Acciones"];
+    const filaTitulos = document.createElement("div");
+    filaTitulos.className = "";
+    filaTitulos.textContent = titulos;
+    tablaOperaciones.appendChild(filaTitulos);
+    contenedorOperaciones.appendChild(tablaOperaciones);
+    mostrarSeccion(balance);
+  } else {
+    imgOperacion.style.display = "block";
+    sinOperaciones.style.display = "block";
+  }
+}
+
+const btnAggOperacion = document
+  .getElementById("agregar-operacion")
+  .addEventListener("click", agregarOperacion);
