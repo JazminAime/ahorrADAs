@@ -42,6 +42,7 @@ const categoriasSec = document.getElementById("vista-categorias");
 const reportes = document.getElementById("vista-reportes");
 const editCategoria = document.getElementById("edit-categorias");
 const vistaOperacion = document.getElementById("vista-operacion");
+const editOperacion = document.getElementById("editar-operacion");
 
 // Referencia a los botones del menú de escritorio
 const mostrarBalance = document.getElementById("mostrar-balance");
@@ -51,6 +52,7 @@ const mostrarEditar = document.getElementById("btn-editar");
 const mostrarOperacion = document.getElementById("ver-operacion");
 const cancelarOperacion = document.getElementById("cancelar-operacion");
 const cancelarEdit = document.getElementById("cancelar-edit");
+const cancelarEditOperacion = document.getElementById("cancelar-edit-op");
 
 // Referencias a los botones del menú móvil
 const mostrarBalanceMobile = document.getElementById("mostrar-balance-mobile");
@@ -67,6 +69,7 @@ function mostrarSeccion(section) {
   reportes.classList.add("hidden");
   editCategoria.classList.add("hidden");
   vistaOperacion.classList.add("hidden");
+  editOperacion.classList.add("hidden");
 
   section.classList.remove("hidden");
 }
@@ -109,16 +112,12 @@ mostrarCategoriasMobile.addEventListener("click", function () {
 mostrarReportesMobile.addEventListener("click", function () {
   mostrarSeccion(reportes);
 });
-
-// Cancelar operaciones ---    SE REPITE????
-/* cancelarOperacion.addEventListener("click", function () {
-  mostrarSeccion(balance);
-});
 cancelarEdit.addEventListener("click", function () {
   mostrarSeccion(categoriasSec);
 });
- */
-
+cancelarEditOperacion.addEventListener("click", function () {
+  mostrarSeccion(balance);
+});
 /* ----------------------------- CATEGORIAS --------------------------------- */
 
 // Agregar, editar y eliminar categorias
@@ -236,18 +235,22 @@ function mostrarCategoria() {
 
 buttonAggCategorias.addEventListener("click", agregarCategorias);
 
-window.onload = mostrarCategoria;
-
 /* ----------------------------------  OPERACIONES  --------------------------------- */
 
 // Agregar, editar y eliminar operaciones
 function agregarOperacion() {
-  const descripcionOperacion = document.getElementById("descripcion-operacion").value;
-  const categoriaOperacion = document.getElementById("select-categoria-operacion").value;
+  const descripcionOperacion = document.getElementById(
+    "descripcion-operacion"
+  ).value;
+  const categoriaOperacion = document.getElementById(
+    "select-categoria-operacion"
+  ).value;
   const fechaOperacion = document.getElementById("fecha-operacion").value;
-  const montoOperacion = parseFloat(document.getElementById("monto-operacion").value); // Convertir a número
+  const montoOperacion = parseFloat(
+    document.getElementById("monto-operacion").value
+  ); // Convertir a número florante (valor monetario)
   const tipoOperacion = document.getElementById("tipo-operacion").value;
-  
+
   const operacion = {
     descripcionOperacion,
     categoriaOperacion,
@@ -275,7 +278,9 @@ function agregarOperacion() {
 function mostrarOperaciones() {
   const sinOperaciones = document.getElementById("sin-operaciones");
   const imgOperacion = document.getElementById("img-operacion");
-  const contenedorOperaciones = document.getElementById("operaciones-agg-contenedor");
+  const contenedorOperaciones = document.getElementById(
+    "operaciones-agg-contenedor"
+  );
 
   let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
 
@@ -285,66 +290,132 @@ function mostrarOperaciones() {
     imgOperacion.style.display = "none";
     sinOperaciones.style.display = "none";
 
+    // Contenedor de la tabla de operaciones
     const tablaOperaciones = document.createElement("div");
-    tablaOperaciones.className = "w-full mb-4";
+    tablaOperaciones.className = "w-full flex flex-col mb-4";
 
     // Crear fila de títulos
     const filaTitulos = document.createElement("div");
-    filaTitulos.className = "flex bg-purple-500 text-white p-2 font-semibold";
+    filaTitulos.className =
+      "md:flex hidden text-center bg-purple-500 text-white p-2 font-semibold shadow-md rounded-md";
 
     const titulos = ["Descripción", "Categoría", "Fecha", "Monto", "Acciones"];
-    titulos.forEach(titulo => {
+    titulos.forEach((titulo) => {
       const tituloElemento = document.createElement("div");
-      tituloElemento.className = "flex-1 px-2 py-1"; 
+      tituloElemento.className = "text-center flex-none basis-1/5 px-1 py-1";
+
       tituloElemento.textContent = titulo;
       filaTitulos.appendChild(tituloElemento);
     });
-    tablaOperaciones.appendChild(filaTitulos); 
+    tablaOperaciones.appendChild(filaTitulos);
 
     // Crear filas de operaciones
     operaciones.forEach((operacion, index) => {
       const filaOperacion = document.createElement("div");
-      filaOperacion.className = "flex p-2 border-b";
+      filaOperacion.className = "md:flex p-2 border-b";
 
-    // Agregar las celdas de la descripción, categoría, fecha y monto
-    const campos = ["descripcionOperacion", "categoriaOperacion", "fechaOperacion", "montoOperacion"];
-    campos.forEach((campo) => {
-      const celda = document.createElement("div");
-      celda.className = "flex-1 px-2 py-1";
+      // Agregar las celdas de la descripción, categoría, fecha y monto
+      const campos = [
+        "descripcionOperacion",
+        "categoriaOperacion",
+        "fechaOperacion",
+        "montoOperacion",
+      ];
+      campos.forEach((campo) => {
+        const celda = document.createElement("div");
+        celda.className = "text-center flex-none basis-1/5 px-1 py-1";
 
-      // Asignar clases adicionales dependiendo del campo
-      if (campo === "categoriaOperacion") {
-        celda.textContent = operacion[campo]; 
-        celda.classList.add("text-sm", "bg-purple-100","rounded-lg", "text-center", "text-purple-600");
-      } else if (campo === "fechaOperacion") {
-        celda.textContent = operacion[campo]; 
-        celda.classList.add("text-sm", "text-gray-500");
-      } else if (campo === "montoOperacion") {
-        let montoConSigno = `$${operacion.montoOperacion}`;
-        if (operacion.tipoOperacion === "GASTO") {
-          montoConSigno = `-$${operacion.montoOperacion}`;
-          celda.classList.add("text-red-600", "font-bold"); 
-        } else if (operacion.tipoOperacion === "GANANCIA") {
-          montoConSigno = `+$${operacion.montoOperacion}`;
-          celda.classList.add("text-green-600", "font-bold"); 
+        // Asignar clases adicionales dependiendo del campo
+        if (campo === "categoriaOperacion") {
+          celda.textContent = operacion[campo];
+          celda.classList.add(
+            "text-sm",
+            "italic",
+            "w-auto",
+            "text-center",
+            "font-medium",
+            "text-purple-600"
+          );
+        } else if (campo === "fechaOperacion") {
+          celda.textContent = operacion[campo];
+          celda.classList.add("text-sm", "text-gray-500", "hidden", "md:flex");
+        } else if (campo === "montoOperacion") {
+          let montoConSigno = `$${operacion.montoOperacion}`;
+          if (operacion.tipoOperacion === "GASTO") {
+            montoConSigno = `-$${operacion.montoOperacion}`;
+            celda.classList.add("text-red-600", "font-bold");
+          } else if (operacion.tipoOperacion === "GANANCIA") {
+            montoConSigno = `+$${operacion.montoOperacion}`;
+            celda.classList.add("text-green-600", "font-bold");
+          }
+          celda.textContent = montoConSigno;
+        } else {
+          celda.textContent = operacion[campo];
         }
-        celda.textContent = montoConSigno;
-      } else {
-        celda.textContent = operacion[campo];
-      }
-      filaOperacion.appendChild(celda);
-    });
+        filaOperacion.appendChild(celda);
+      });
 
       // Crear contenedor de acciones
       const acciones = document.createElement("div");
-      acciones.className = "flex gap-2";
+      acciones.className = "ml-2 flex gap-2 justify-center";
 
       // Botón de editar
       const botonEditar = document.createElement("button");
       botonEditar.textContent = "Editar";
       botonEditar.className = "text-blue-500 hover:underline text-xs";
       botonEditar.addEventListener("click", function () {
-        // Lógica de edición aquí
+        mostrarSeccion(editOperacion);
+
+        document.getElementById("descripcion-edit-op").value =
+          operacion.descripcionOperacion;
+        document.getElementById("monto-edit-op").value =
+          operacion.montoOperacion;
+        document.getElementById("tipo-edit-op").value = operacion.tipoOperacion;
+
+        const selectCatOp = document.getElementById("select-categoria-edit");
+        selectCatOp.innerHTML = "";
+
+        let categorias = JSON.parse(localStorage.getItem("categorias")) || [];
+        categorias.forEach((categoria) => {
+          const optionEdit = document.createElement("option");
+          optionEdit.textContent = categoria;
+          selectCatOp.appendChild(optionEdit);
+        });
+
+        selectCatOp.value = operacion.categoriaOperacion;
+
+        document.getElementById("fecha-edit-op").value =
+          operacion.fechaOperacion;
+
+        // Modificar valores
+        const confirmarEditarOperacion =
+          document.getElementById("editar-op-btn");
+
+        confirmarEditarOperacion.addEventListener("click", function () {
+          const nuevaDescripcion = document.getElementById(
+            "descripcion-edit-op"
+          ).value;
+          const nuevoMonto = parseFloat(
+            document.getElementById("monto-edit-op").value
+          );
+          const nuevoTipo = document.getElementById("tipo-edit-op").value;
+          const nuevaCategoria = document.getElementById(
+            "select-categoria-edit"
+          ).value;
+          const nuevaFecha = document.getElementById("fecha-edit-op").value;
+
+          operaciones[index] = {
+            descripcionOperacion: nuevaDescripcion,
+            montoOperacion: nuevoMonto,
+            tipoOperacion: nuevoTipo,
+            categoriaOperacion: nuevaCategoria,
+            fechaOperacion: nuevaFecha,
+          };
+
+          localStorage.setItem("operaciones", JSON.stringify(operaciones));
+          mostrarOperaciones();
+          mostrarSeccion(balance);
+        });
       });
 
       // Botón de eliminar
@@ -376,3 +447,6 @@ function mostrarOperaciones() {
 const btnAggOperacion = document
   .getElementById("agregar-operacion")
   .addEventListener("click", agregarOperacion);
+
+window.onload = mostrarOperaciones;
+window.onload = mostrarCategoria;
