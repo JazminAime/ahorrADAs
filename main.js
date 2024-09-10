@@ -239,19 +239,16 @@ buttonAggCategorias.addEventListener("click", agregarCategorias);
 
 // Agregar, editar y eliminar operaciones
 function agregarOperacion() {
-  const descripcionOperacion = document.getElementById(
-    "descripcion-operacion"
-  ).value;
-  const categoriaOperacion = document.getElementById(
-    "select-categoria-operacion"
-  ).value;
+  const idOperacion = `op-${new Date().getTime()}`;// Generar un ID único basado en la fecha y hora actuales
+  const descripcionOperacion = document.getElementById("descripcion-operacion").value;
+  const categoriaOperacion = document.getElementById("select-categoria-operacion").value;
   const fechaOperacion = document.getElementById("fecha-operacion").value;
-  const montoOperacion = parseFloat(
-    document.getElementById("monto-operacion").value
-  ); // Convertir a número florante (valor monetario)
+  const montoOperacion = parseFloat(document.getElementById("monto-operacion").value); // Convertir a número florante (valor monetario)
   const tipoOperacion = document.getElementById("tipo-operacion").value;
+  
 
   const operacion = {
+    id: idOperacion, // Asignar el ID único
     descripcionOperacion,
     categoriaOperacion,
     fechaOperacion,
@@ -275,12 +272,14 @@ function agregarOperacion() {
   document.getElementById("fecha-operacion").value = "";
 }
 
+const obtenerOperacion = (idOperacion, operaciones) => {
+  return operaciones.find((operacion) => operacion.id === idOperacion)
+}
+
 function mostrarOperaciones() {
   const sinOperaciones = document.getElementById("sin-operaciones");
   const imgOperacion = document.getElementById("img-operacion");
-  const contenedorOperaciones = document.getElementById(
-    "operaciones-agg-contenedor"
-  );
+  const contenedorOperaciones = document.getElementById("operaciones-agg-contenedor");
 
   let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
 
@@ -296,14 +295,12 @@ function mostrarOperaciones() {
 
     // Crear fila de títulos
     const filaTitulos = document.createElement("div");
-    filaTitulos.className =
-      "md:flex hidden text-center bg-purple-500 text-white p-2 font-semibold shadow-md rounded-md";
+    filaTitulos.className = "md:flex hidden text-center bg-purple-500 text-white p-2 font-semibold shadow-md rounded-md";
 
     const titulos = ["Descripción", "Categoría", "Fecha", "Monto", "Acciones"];
     titulos.forEach((titulo) => {
       const tituloElemento = document.createElement("div");
       tituloElemento.className = "text-center flex-none basis-1/5 px-1 py-1";
-
       tituloElemento.textContent = titulo;
       filaTitulos.appendChild(tituloElemento);
     });
@@ -315,12 +312,7 @@ function mostrarOperaciones() {
       filaOperacion.className = "md:flex p-2 border-b";
 
       // Agregar las celdas de la descripción, categoría, fecha y monto
-      const campos = [
-        "descripcionOperacion",
-        "categoriaOperacion",
-        "fechaOperacion",
-        "montoOperacion",
-      ];
+      const campos = ["descripcionOperacion","categoriaOperacion","fechaOperacion","montoOperacion"];
       campos.forEach((campo) => {
         const celda = document.createElement("div");
         celda.className = "text-center flex-none basis-1/5 px-1 py-1";
@@ -328,14 +320,7 @@ function mostrarOperaciones() {
         // Asignar clases adicionales dependiendo del campo
         if (campo === "categoriaOperacion") {
           celda.textContent = operacion[campo];
-          celda.classList.add(
-            "text-sm",
-            "italic",
-            "w-auto",
-            "text-center",
-            "font-medium",
-            "text-purple-600"
-          );
+          celda.classList.add("text-sm","italic","w-auto","text-center","font-medium","text-purple-600");
         } else if (campo === "fechaOperacion") {
           celda.textContent = operacion[campo];
           celda.classList.add("text-sm", "text-gray-500", "hidden", "md:flex");
@@ -392,16 +377,10 @@ function mostrarOperaciones() {
           document.getElementById("editar-op-btn");
 
         confirmarEditarOperacion.addEventListener("click", function () {
-          const nuevaDescripcion = document.getElementById(
-            "descripcion-edit-op"
-          ).value;
-          const nuevoMonto = parseFloat(
-            document.getElementById("monto-edit-op").value
-          );
+          const nuevaDescripcion = document.getElementById("descripcion-edit-op").value;
+          const nuevoMonto = parseFloat(document.getElementById("monto-edit-op").value);
           const nuevoTipo = document.getElementById("tipo-edit-op").value;
-          const nuevaCategoria = document.getElementById(
-            "select-categoria-edit"
-          ).value;
+          const nuevaCategoria = document.getElementById("select-categoria-edit").value;
           const nuevaFecha = document.getElementById("fecha-edit-op").value;
 
           operaciones[index] = {
@@ -450,3 +429,82 @@ const btnAggOperacion = document
 
 window.onload = mostrarOperaciones;
 window.onload = mostrarCategoria;
+
+
+// Función para aplicar filtros solo si hay filtros aplicados
+function aplicarFiltros() {
+  const tipoFiltro = document.getElementById("filtro-tipo").value;
+  const categoriaFiltro = document.getElementById("select-categoria").value;
+  const fechaDesde = document.getElementById("filtro-desde").value;
+  const ordenarPor = document.getElementById("filtro-orden").value;
+
+  let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+
+  // Comprobar si hay filtros aplicados
+  const hayFiltrosAplicados = tipoFiltro !== "TODOS" || categoriaFiltro || fechaDesde || ordenarPor;
+
+  if (hayFiltrosAplicados) {
+    // Filtrar por tipo
+    if (tipoFiltro !== "TODOS") {
+      operaciones = operaciones.filter(op => op.tipoOperacion === tipoFiltro);
+    }
+
+    // Filtrar por categoría
+    if (categoriaFiltro) {
+      operaciones = operaciones.filter(op => op.categoriaOperacion === categoriaFiltro);
+    }
+
+    // Filtrar por fecha
+    if (fechaDesde) {
+      const fechaDesdeDate = new Date(fechaDesde);
+      operaciones = operaciones.filter(op => new Date(op.fechaOperacion) >= fechaDesdeDate);
+    }
+
+    // Ordenar
+    switch (ordenarPor) {
+      case "MAS_RECIENTES":
+        operaciones.sort((a, b) => new Date(b.fechaOperacion) - new Date(a.fechaOperacion));
+        break;
+      case "MENOS_RECIENTES":
+        operaciones.sort((a, b) => new Date(a.fechaOperacion) - new Date(b.fechaOperacion));
+        break;
+      case "MAYOR_MONTO":
+        operaciones.sort((a, b) => b.montoOperacion - a.montoOperacion);
+        break;
+      case "MENOR_MONTO":
+        operaciones.sort((a, b) => a.montoOperacion - b.montoOperacion);
+        break;
+      case "A/Z":
+        operaciones.sort((a, b) => a.descripcionOperacion.localeCompare(b.descripcionOperacion));
+        break;
+      case "Z/A":
+        operaciones.sort((a, b) => b.descripcionOperacion.localeCompare(a.descripcionOperacion));
+        break;
+    }
+  }
+
+  mostrarOperaciones(operaciones);
+}
+
+// Inicializar filtros al cargar la página
+window.onload = function() {
+  mostrarCategoria(); // Cargar categorías al iniciar
+  
+  // Obtener operaciones del localStorage
+  const operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+
+  // Verificar si hay operaciones almacenadas y mostrarlas
+  if (operaciones.length > 0) {
+    mostrarOperaciones(operaciones);
+  } else {
+    // Mostrar pantalla de "sin operaciones" si no hay ninguna
+    document.getElementById("sin-operaciones").style.display = "block";
+    document.getElementById("img-operacion").style.display = "block";
+  }
+};
+
+// Eventos de cambio en los filtros para aplicar la función
+document.getElementById("filtro-tipo").addEventListener("change", aplicarFiltros);
+document.getElementById("select-categoria").addEventListener("change", aplicarFiltros);
+document.getElementById("filtro-desde").addEventListener("change", aplicarFiltros);
+document.getElementById("filtro-orden").addEventListener("change", aplicarFiltros)
