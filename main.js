@@ -32,7 +32,7 @@ function alternarFiltros() {
 }
 
 toggleFiltros.addEventListener("click", function () {
-  alternarFiltros(balance);
+  alternarFiltros();
 });
 
 // VISIBILIDIDAD DE PANELES BALANCE - CATEGORIAS - EDITAR CATEGORIAS - REPORTES
@@ -42,6 +42,7 @@ const categoriasSec = document.getElementById("vista-categorias");
 const reportes = document.getElementById("vista-reportes");
 const editCategoria = document.getElementById("edit-categorias");
 const vistaOperacion = document.getElementById("vista-operacion");
+const editOperacion = document.getElementById("editar-operacion");
 
 // Referencia a los botones del menú de escritorio
 const mostrarBalance = document.getElementById("mostrar-balance");
@@ -51,6 +52,7 @@ const mostrarEditar = document.getElementById("btn-editar");
 const mostrarOperacion = document.getElementById("ver-operacion");
 const cancelarOperacion = document.getElementById("cancelar-operacion");
 const cancelarEdit = document.getElementById("cancelar-edit");
+const cancelarEditOperacion = document.getElementById("cancelar-edit-op");
 
 // Referencias a los botones del menú móvil
 const mostrarBalanceMobile = document.getElementById("mostrar-balance-mobile");
@@ -67,6 +69,7 @@ function mostrarSeccion(section) {
   reportes.classList.add("hidden");
   editCategoria.classList.add("hidden");
   vistaOperacion.classList.add("hidden");
+  editOperacion.classList.add("hidden");
 
   section.classList.remove("hidden");
 }
@@ -109,14 +112,13 @@ mostrarCategoriasMobile.addEventListener("click", function () {
 mostrarReportesMobile.addEventListener("click", function () {
   mostrarSeccion(reportes);
 });
-
-// Cancelar operaciones
-cancelarOperacion.addEventListener("click", function () {
-  mostrarSeccion(balance);
-});
 cancelarEdit.addEventListener("click", function () {
   mostrarSeccion(categoriasSec);
 });
+cancelarEditOperacion.addEventListener("click", function () {
+  mostrarSeccion(balance);
+});
+/* ----------------------------- CATEGORIAS --------------------------------- */
 
 // Agregar, editar y eliminar categorias
 const inputAggCategorias = document.getElementById("categoria-nombre");
@@ -202,8 +204,22 @@ function mostrarCategoria() {
     buttonContainer.appendChild(deleteButton);
 
     deleteButton.addEventListener("click", function () {
-      categorias.splice(i, 1);
+      const categoriaAEliminar = categorias[i];
+
+      // Eliminar la categoría
+      categorias = categorias.filter(
+        (categoria) => categoria !== categoriaAEliminar
+      );
       localStorage.setItem("categorias", JSON.stringify(categorias));
+
+      // Eliminar las operaciones relacionadas
+      let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+      operaciones = operaciones.filter(
+        (operacion) => operacion.categoriaOperacion !== categoriaAEliminar
+      );
+      localStorage.setItem("operaciones", JSON.stringify(operaciones));
+
+      mostrarOperaciones();
       mostrarCategoria();
     });
 
@@ -220,6 +236,12 @@ function mostrarCategoria() {
   selectCategoria.innerHTML = "";
   optionOperacion.innerHTML = "";
 
+  // Añadir la opción TODAS al principio
+  const optionTodas = document.createElement("option");
+  optionTodas.textContent = "Todas";
+  optionTodas.value = "TODAS";
+  selectCategoria.appendChild(optionTodas);
+
   for (let i = 0; i < categorias.length; i++) {
     const option1 = document.createElement("option");
     option1.textContent = categorias[i];
@@ -233,4 +255,326 @@ function mostrarCategoria() {
 
 buttonAggCategorias.addEventListener("click", agregarCategorias);
 
+/* ----------------------------------  OPERACIONES  --------------------------------- */
+
+// Agregar, editar y eliminar operaciones
+function agregarOperacion() {
+  const idOperacion = `op-${new Date().getTime()}`; // Generar un ID único basado en la fecha y hora actuales
+  const descripcionOperacion = document.getElementById(
+    "descripcion-operacion"
+  ).value;
+  const categoriaOperacion = document.getElementById(
+    "select-categoria-operacion"
+  ).value;
+  const fechaOperacion = document.getElementById("fecha-operacion").value;
+  const montoOperacion = parseFloat(
+    document.getElementById("monto-operacion").value
+  ); // Convertir a número florante (valor monetario)
+  const tipoOperacion = document.getElementById("tipo-operacion").value;
+
+  const operacion = {
+    id: idOperacion, // Asignar el ID único
+    descripcionOperacion,
+    categoriaOperacion,
+    fechaOperacion,
+    montoOperacion,
+    tipoOperacion,
+  };
+
+  let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+
+  operaciones.push(operacion);
+
+  localStorage.setItem("operaciones", JSON.stringify(operaciones));
+
+  mostrarOperaciones();
+
+  // Limpiar campos
+  document.getElementById("descripcion-operacion").value = "";
+  document.getElementById("monto-operacion").value = "";
+  document.getElementById("tipo-operacion").value = "";
+  document.getElementById("categoria-operacion").value = "";
+  document.getElementById("fecha-operacion").value = "";
+}
+
+const obtenerOperacion = (idOperacion, operaciones) => {
+  return operaciones.find((operacion) => operacion.id === idOperacion);
+};
+
+function mostrarOperaciones(operaciones = null) {
+  const sinOperaciones = document.getElementById("sin-operaciones");
+  const imgOperacion = document.getElementById("img-operacion");
+  const contenedorOperaciones = document.getElementById(
+    "operaciones-agg-contenedor"
+  );
+
+  if (operaciones === null) {
+    operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+  }
+
+  contenedorOperaciones.innerHTML = "";
+
+  if (operaciones.length > 0) {
+    imgOperacion.style.display = "none";
+    sinOperaciones.style.display = "none";
+
+    // Contenedor de la tabla de operaciones
+    const tablaOperaciones = document.createElement("div");
+    tablaOperaciones.className = "w-full flex flex-col mb-4";
+
+    // Crear fila de títulos
+    const filaTitulos = document.createElement("div");
+    filaTitulos.className =
+      "md:flex hidden text-center bg-purple-500 text-white p-2 font-semibold shadow-md rounded-md";
+
+    const titulos = ["Descripción", "Categoría", "Fecha", "Monto", "Acciones"];
+    titulos.forEach((titulo) => {
+      const tituloElemento = document.createElement("div");
+      tituloElemento.className = "text-center flex-none basis-1/5 px-1 py-1";
+      tituloElemento.textContent = titulo;
+      filaTitulos.appendChild(tituloElemento);
+    });
+    tablaOperaciones.appendChild(filaTitulos);
+
+    // Crear filas de operaciones
+    operaciones.forEach((operacion, index) => {
+      const filaOperacion = document.createElement("div");
+      filaOperacion.className = "md:flex p-2 border-b";
+
+      // Agregar las celdas de la descripción, categoría, fecha y monto
+      const campos = [
+        "descripcionOperacion",
+        "categoriaOperacion",
+        "fechaOperacion",
+        "montoOperacion",
+      ];
+      campos.forEach((campo) => {
+        const celda = document.createElement("div");
+        celda.className = "text-center flex-none basis-1/5 px-1 py-1";
+
+        // Asignar clases adicionales dependiendo del campo
+        if (campo === "categoriaOperacion") {
+          celda.textContent = operacion[campo];
+          celda.classList.add(
+            "text-sm",
+            "italic",
+            "w-auto",
+            "text-center",
+            "font-medium",
+            "text-purple-600"
+          );
+        } else if (campo === "fechaOperacion") {
+          celda.textContent = operacion[campo];
+          celda.classList.add("text-sm", "text-gray-500", "hidden", "md:flex");
+        } else if (campo === "montoOperacion") {
+          let montoConSigno = `$${operacion.montoOperacion}`;
+          if (operacion.tipoOperacion === "GASTO") {
+            montoConSigno = `-$${operacion.montoOperacion}`;
+            celda.classList.add("text-red-600", "font-bold");
+          } else if (operacion.tipoOperacion === "GANANCIA") {
+            montoConSigno = `+$${operacion.montoOperacion}`;
+            celda.classList.add("text-green-600", "font-bold");
+          }
+          celda.textContent = montoConSigno;
+        } else {
+          celda.textContent = operacion[campo];
+        }
+        filaOperacion.appendChild(celda);
+      });
+
+      // Crear contenedor de acciones
+      const acciones = document.createElement("div");
+      acciones.className = "ml-2 flex gap-2 justify-center";
+
+      // Botón de editar
+      const botonEditar = document.createElement("button");
+      botonEditar.textContent = "Editar";
+      botonEditar.className = "text-blue-500 hover:underline text-xs";
+      botonEditar.addEventListener("click", function () {
+        mostrarSeccion(editOperacion);
+
+        document.getElementById("descripcion-edit-op").value =
+          operacion.descripcionOperacion;
+        document.getElementById("monto-edit-op").value =
+          operacion.montoOperacion;
+        document.getElementById("tipo-edit-op").value = operacion.tipoOperacion;
+
+        const selectCatOp = document.getElementById("select-categoria-edit");
+        selectCatOp.innerHTML = "";
+
+        let categorias = JSON.parse(localStorage.getItem("categorias")) || [];
+        categorias.forEach((categoria) => {
+          const optionEdit = document.createElement("option");
+          optionEdit.textContent = categoria;
+          selectCatOp.appendChild(optionEdit);
+        });
+
+        selectCatOp.value = operacion.categoriaOperacion;
+
+        document.getElementById("fecha-edit-op").value =
+          operacion.fechaOperacion;
+
+        // Modificar valores
+        const confirmarEditarOperacion =
+          document.getElementById("editar-op-btn");
+
+        confirmarEditarOperacion.addEventListener("click", function () {
+          const nuevaDescripcion = document.getElementById(
+            "descripcion-edit-op"
+          ).value;
+          const nuevoMonto = parseFloat(
+            document.getElementById("monto-edit-op").value
+          );
+          const nuevoTipo = document.getElementById("tipo-edit-op").value;
+          const nuevaCategoria = document.getElementById(
+            "select-categoria-edit"
+          ).value;
+          const nuevaFecha = document.getElementById("fecha-edit-op").value;
+
+          operaciones[index] = {
+            descripcionOperacion: nuevaDescripcion,
+            montoOperacion: nuevoMonto,
+            tipoOperacion: nuevoTipo,
+            categoriaOperacion: nuevaCategoria,
+            fechaOperacion: nuevaFecha,
+          };
+
+          localStorage.setItem("operaciones", JSON.stringify(operaciones));
+          mostrarOperaciones();
+          mostrarSeccion(balance);
+        });
+      });
+
+      // Botón de eliminar
+      const botonEliminar = document.createElement("button");
+      botonEliminar.textContent = "Eliminar";
+      botonEliminar.className = "text-red-500 hover:underline text-xs";
+      botonEliminar.addEventListener("click", function () {
+        operaciones.splice(index, 1);
+        localStorage.setItem("operaciones", JSON.stringify(operaciones));
+        mostrarOperaciones();
+      });
+
+      acciones.appendChild(botonEditar);
+      acciones.appendChild(botonEliminar);
+
+      // Añadir las acciones al final de la fila
+      filaOperacion.appendChild(acciones);
+      tablaOperaciones.appendChild(filaOperacion);
+    });
+
+    contenedorOperaciones.appendChild(tablaOperaciones);
+    mostrarSeccion(balance);
+  } else {
+    imgOperacion.style.display = "block";
+    sinOperaciones.style.display = "block";
+  }
+}
+
+const btnAggOperacion = document
+  .getElementById("agregar-operacion")
+  .addEventListener("click", agregarOperacion);
+
+window.onload = mostrarOperaciones;
 window.onload = mostrarCategoria;
+
+// Función para aplicar filtros solo si hay filtros aplicados
+function aplicarFiltros() {
+  const tipoFiltro = document.getElementById("filtro-tipo").value;
+  const categoriaFiltro = document.getElementById("select-categoria").value;
+  const fechaDesde = document.getElementById("filtro-desde").value;
+  const ordenarPor = document.getElementById("filtro-orden").value;
+
+  let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+
+  // Comprobar si hay filtros aplicados
+  const hayFiltrosAplicados =
+    tipoFiltro !== "TODOS" || categoriaFiltro || fechaDesde || ordenarPor;
+
+  if (hayFiltrosAplicados) {
+    // Filtrar por tipo
+    if (tipoFiltro !== "TODOS") {
+      operaciones = operaciones.filter((op) => op.tipoOperacion === tipoFiltro);
+    }
+
+    // Filtrar por categoría
+    if (categoriaFiltro && categoriaFiltro !== "TODAS") {
+      operaciones = operaciones.filter(
+        (op) => op.categoriaOperacion === categoriaFiltro
+      );
+    }
+
+    // Filtrar por fecha
+    if (fechaDesde) {
+      const fechaDesdeDate = new Date(fechaDesde);
+      operaciones = operaciones.filter(
+        (op) => new Date(op.fechaOperacion) >= fechaDesdeDate
+      );
+    }
+
+    // Ordenar
+    switch (ordenarPor) {
+      case "MAS_RECIENTES":
+        operaciones.sort(
+          (a, b) => new Date(b.fechaOperacion) - new Date(a.fechaOperacion)
+        );
+        break;
+      case "MENOS_RECIENTES":
+        operaciones.sort(
+          (a, b) => new Date(a.fechaOperacion) - new Date(b.fechaOperacion)
+        );
+        break;
+      case "MAYOR_MONTO":
+        operaciones.sort((a, b) => b.montoOperacion - a.montoOperacion);
+        break;
+      case "MENOR_MONTO":
+        operaciones.sort((a, b) => a.montoOperacion - b.montoOperacion);
+        break;
+      case "A/Z":
+        operaciones.sort((a, b) =>
+          a.descripcionOperacion.localeCompare(b.descripcionOperacion)
+        );
+        break;
+      case "Z/A":
+        operaciones.sort((a, b) =>
+          b.descripcionOperacion.localeCompare(a.descripcionOperacion)
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  mostrarOperaciones(operaciones);
+}
+
+// Inicializar filtros al cargar la página
+window.onload = function () {
+  mostrarCategoria(); // Cargar categorías al iniciar
+
+  // Obtener operaciones del localStorage
+  const operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+
+  // Verificar si hay operaciones almacenadas y mostrarlas
+  if (operaciones.length > 0) {
+    mostrarOperaciones(operaciones);
+  } else {
+    // Mostrar pantalla de "sin operaciones" si no hay ninguna
+    document.getElementById("sin-operaciones").style.display = "block";
+    document.getElementById("img-operacion").style.display = "block";
+  }
+};
+
+// Eventos de cambio en los filtros para aplicar la función
+document
+  .getElementById("filtro-tipo")
+  .addEventListener("change", aplicarFiltros);
+document
+  .getElementById("select-categoria")
+  .addEventListener("change", aplicarFiltros);
+document
+  .getElementById("filtro-desde")
+  .addEventListener("change", aplicarFiltros);
+document
+  .getElementById("filtro-orden")
+  .addEventListener("change", aplicarFiltros);
