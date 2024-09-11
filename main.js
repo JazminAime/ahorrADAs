@@ -204,8 +204,22 @@ function mostrarCategoria() {
     buttonContainer.appendChild(deleteButton);
 
     deleteButton.addEventListener("click", function () {
-      categorias.splice(i, 1);
+      const categoriaAEliminar = categorias[i];
+
+      // Eliminar la categoría
+      categorias = categorias.filter(
+        (categoria) => categoria !== categoriaAEliminar
+      );
       localStorage.setItem("categorias", JSON.stringify(categorias));
+
+      // Eliminar las operaciones relacionadas
+      let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+      operaciones = operaciones.filter(
+        (operacion) => operacion.categoriaOperacion !== categoriaAEliminar
+      );
+      localStorage.setItem("operaciones", JSON.stringify(operaciones));
+
+      mostrarOperaciones();
       mostrarCategoria();
     });
 
