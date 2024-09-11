@@ -465,6 +465,8 @@ function mostrarOperaciones(operaciones = null) {
 
     contenedorOperaciones.appendChild(tablaOperaciones);
     mostrarSeccion(balance);
+
+    actualizarResumen(operaciones);
   } else {
     imgOperacion.style.display = "block";
     sinOperaciones.style.display = "block";
@@ -543,9 +545,11 @@ function aplicarFiltros() {
       default:
         break;
     }
-  }
 
-  mostrarOperaciones(operaciones);
+    mostrarOperaciones(operaciones);
+  } else {
+    mostrarOperacion();
+  }
 }
 
 // Inicializar filtros al cargar la página
@@ -578,3 +582,40 @@ document
 document
   .getElementById("filtro-orden")
   .addEventListener("change", aplicarFiltros);
+
+function actualizarResumen(operaciones) {
+  let totalGanancias = 0;
+  let totalGastos = 0;
+
+  operaciones.forEach((operacion) => {
+    if (operacion.tipoOperacion === "GANANCIA") {
+      totalGanancias += operacion.montoOperacion;
+    } else if (operacion.tipoOperacion === "GASTO") {
+      totalGastos += operacion.montoOperacion;
+    }
+  });
+
+  const total = totalGanancias - totalGastos;
+
+  document.getElementById("total-ganancias").textContent = `$${totalGanancias}`;
+  document.getElementById("total-gastos").textContent = `$${totalGastos}`;
+
+  const totalGeneral = document.getElementById("total-general");
+
+  let totalSigno;
+  let totalColor;
+
+  if (total > 0) {
+    totalSigno = `+${total}`;
+    totalColor = "text-green-600";
+  } else if (total < 0) {
+    totalSigno = `${total}`;
+    totalColor = "text-red-600";
+  } else {
+    totalSigno = `${total}`;
+    totalColor = "text-gray-600";
+  }
+
+  totalGeneral.textContent = `$${totalSigno}`;
+  totalGeneral.className = `text-xl font-bold ${totalColor}`;
+}
