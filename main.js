@@ -176,9 +176,7 @@ function mostrarCategoria() {
     editButton.addEventListener("click", function () {
       mostrarSeccion(editCategoria);
       const nombreCategoriaExistente = categorias[i];
-      const editarCategoriaInput = document.getElementById(
-        "editar-categoria-nombre"
-      );
+      const editarCategoriaInput = document.getElementById("editar-categoria-nombre");
       editarCategoriaInput.value = nombreCategoriaExistente;
 
       const confirmarEditar = document.getElementById("confirm-edit");
@@ -188,9 +186,22 @@ function mostrarCategoria() {
         if (nuevoNombre !== "") {
           categorias[i] = nuevoNombre;
           localStorage.setItem("categorias", JSON.stringify(categorias));
-          mostrarCategoria();
-          mostrarSeccion(categoriasSec);
-          generarReporte(); 
+
+           // Actualizar las categorías en las operaciones
+           let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+           operaciones = operaciones.map(op => {
+             if (op.categoriaOperacion === nombreCategoriaExistente) {
+               op.categoriaOperacion = nuevoNombre;
+             }
+             return op;
+           });
+           localStorage.setItem("operaciones", JSON.stringify(operaciones));
+ 
+           mostrarCategoria();
+           mostrarSeccion(categoriasSec);
+           generarReporte();
+           mostrarOperaciones();
+
         }
       });
     });
