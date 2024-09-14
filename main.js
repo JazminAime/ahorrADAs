@@ -207,21 +207,28 @@ function mostrarCategoria() {
     deleteButton.addEventListener("click", function () {
       const categoriaAEliminar = categorias[i];
 
-      // Eliminar la categoría
-      categorias = categorias.filter(
-        (categoria) => categoria !== categoriaAEliminar
+      // Mostrar ventana de confirmación
+      const confirmacion = confirm(
+        `¿Estás seguro de que quieres eliminar la categoría "${categoriaAEliminar}"?`
       );
-      localStorage.setItem("categorias", JSON.stringify(categorias));
 
-      // Eliminar las operaciones relacionadas
-      let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
-      operaciones = operaciones.filter(
-        (operacion) => operacion.categoriaOperacion !== categoriaAEliminar
-      );
-      localStorage.setItem("operaciones", JSON.stringify(operaciones));
+      if (confirmacion) {
+        // Eliminar la categoría
+        categorias = categorias.filter(
+          (categoria) => categoria !== categoriaAEliminar
+        );
+        localStorage.setItem("categorias", JSON.stringify(categorias));
 
-      mostrarOperaciones();
-      mostrarCategoria();
+        // Eliminar las operaciones relacionadas
+        let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
+        operaciones = operaciones.filter(
+          (operacion) => operacion.categoriaOperacion !== categoriaAEliminar
+        );
+        localStorage.setItem("operaciones", JSON.stringify(operaciones));
+
+        mostrarOperaciones();
+        mostrarCategoria();
+      }
     });
 
     // Añadir contenedor de botones al contenedor principal
@@ -437,6 +444,7 @@ function mostrarOperaciones(operaciones = null) {
           localStorage.setItem("operaciones", JSON.stringify(operaciones));
           mostrarOperaciones();
           mostrarSeccion(balance);
+          generarReporte();
         });
       });
 
@@ -445,10 +453,22 @@ function mostrarOperaciones(operaciones = null) {
       botonEliminar.textContent = "Eliminar";
       botonEliminar.className = "text-red-500 hover:underline text-xs";
       botonEliminar.addEventListener("click", function () {
-        operaciones.splice(index, 1);
-        localStorage.setItem("operaciones", JSON.stringify(operaciones));
-        mostrarOperaciones();
-        generarReporte();
+        // Obtener la descripción y la categoría de la operación
+        const descripcionOperacion = operaciones[index].descripcionOperacion;
+        const categoriaOperacion = operaciones[index].categoriaOperacion;
+
+        // Mostrar mensaje de confirmación con la descripción y la categoría
+        const confirmar = confirm(
+          `¿Estás seguro de que quieres eliminar la operación?\n\nDescripción: ${descripcionOperacion}\nCategoría: ${categoriaOperacion}`
+        );
+
+        if (confirmar) {
+          // Si el usuario confirma, eliminar la operación
+          operaciones.splice(index, 1);
+          localStorage.setItem("operaciones", JSON.stringify(operaciones));
+          mostrarOperaciones();
+          generarReporte();
+        }
       });
 
       acciones.appendChild(botonEditar);
