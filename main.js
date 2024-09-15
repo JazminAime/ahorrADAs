@@ -454,6 +454,7 @@ function mostrarOperaciones(operaciones = null) {
         localStorage.setItem("operaciones", JSON.stringify(operaciones));
         mostrarOperaciones();
         generarReporte();
+        actualizarResumen(operaciones); 
       }
       }); 
 
