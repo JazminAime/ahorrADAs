@@ -201,7 +201,6 @@ function mostrarCategoria() {
            mostrarSeccion(categoriasSec);
            generarReporte();
            mostrarOperaciones();
-
         }
       });
     });
@@ -276,13 +275,21 @@ buttonAggCategorias.addEventListener("click", agregarCategorias);
 
 // Agregar, editar y eliminar operaciones
 function agregarOperacion() {
-const descripcionOperacion = document.getElementById("descripcion-operacion").value;
-const categoriaOperacion = document.getElementById("select-categoria-operacion").value;
-const fechaOperacion = document.getElementById("fecha-operacion").value;
-const montoOperacion = parseFloat(document.getElementById("monto-operacion").value); // Convertir a número florante (valor monetario)
-const tipoOperacion = document.getElementById("tipo-operacion").value;
+  const idOperacion = `op-${new Date().getTime()}`; // Generar un ID único basado en la fecha y hora actuales
+  const descripcionOperacion = document.getElementById(
+    "descripcion-operacion"
+  ).value;
+  const categoriaOperacion = document.getElementById(
+    "select-categoria-operacion"
+  ).value;
+  const fechaOperacion = document.getElementById("fecha-operacion").value;
+  const montoOperacion = parseFloat(
+    document.getElementById("monto-operacion").value
+  ); // Convertir a número florante (valor monetario)
+  const tipoOperacion = document.getElementById("tipo-operacion").value;
 
   const operacion = {
+    id: idOperacion, // Asignar el ID único
     descripcionOperacion,
     categoriaOperacion,
     fechaOperacion,
@@ -297,7 +304,6 @@ const tipoOperacion = document.getElementById("tipo-operacion").value;
   localStorage.setItem("operaciones", JSON.stringify(operaciones));
 
   mostrarOperaciones();
-  generarReporte();
 
   // Limpiar campos
   document.getElementById("descripcion-operacion").value = "";
@@ -306,6 +312,10 @@ const tipoOperacion = document.getElementById("tipo-operacion").value;
   document.getElementById("categoria-operacion").value = "";
   document.getElementById("fecha-operacion").value = "";
 }
+
+const obtenerOperacion = (idOperacion, operaciones) => {
+  return operaciones.find((operacion) => operacion.id === idOperacion);
+};
 
 function mostrarOperaciones(operaciones = null) {
   const sinOperaciones = document.getElementById("sin-operaciones");
@@ -361,7 +371,14 @@ function mostrarOperaciones(operaciones = null) {
         // Asignar clases adicionales dependiendo del campo
         if (campo === "categoriaOperacion") {
           celda.textContent = operacion[campo];
-          celda.classList.add("text-sm","italic","w-auto","text-center","font-medium","text-purple-600");
+          celda.classList.add(
+            "text-sm",
+            "italic",
+            "w-auto",
+            "text-center",
+            "font-medium",
+            "text-purple-600"
+          );
         } else if (campo === "fechaOperacion") {
           celda.textContent = operacion[campo];
           celda.classList.add("text-sm", "text-gray-500", "hidden", "md:flex");
@@ -392,8 +409,10 @@ function mostrarOperaciones(operaciones = null) {
       botonEditar.addEventListener("click", function () {
         mostrarSeccion(editOperacion);
 
-        document.getElementById("descripcion-edit-op").value =operacion.descripcionOperacion;
-        document.getElementById("monto-edit-op").value =operacion.montoOperacion;
+        document.getElementById("descripcion-edit-op").value =
+          operacion.descripcionOperacion;
+        document.getElementById("monto-edit-op").value =
+          operacion.montoOperacion;
         document.getElementById("tipo-edit-op").value = operacion.tipoOperacion;
 
         const selectCatOp = document.getElementById("select-categoria-edit");
@@ -412,12 +431,16 @@ function mostrarOperaciones(operaciones = null) {
           operacion.fechaOperacion;
 
         // Modificar valores
-        const confirmarEditarOperacion = document.getElementById("editar-op-btn");
+        const confirmarEditarOperacion =
+          document.getElementById("editar-op-btn");
+
         confirmarEditarOperacion.addEventListener("click", function () {
           const nuevaDescripcion = document.getElementById("descripcion-edit-op").value;
           const nuevoMonto = parseFloat(document.getElementById("monto-edit-op").value);
           const nuevoTipo = document.getElementById("tipo-edit-op").value;
-          const nuevaCategoria = document.getElementById("select-categoria-edit").value;
+          const nuevaCategoria = document.getElementById(
+            "select-categoria-edit"
+          ).value;
           const nuevaFecha = document.getElementById("fecha-edit-op").value;
 
           operaciones[index] = {
@@ -553,7 +576,6 @@ function aplicarFiltros() {
   } else {
     mostrarOperacion();
   }
-  generarReporte(); // Actualizar reporte después de aplicar filtros
 }
 
 // Inicializar filtros al cargar la página
@@ -587,7 +609,6 @@ document
   .getElementById("filtro-orden")
   .addEventListener("change", aplicarFiltros);
 
-  // -------------------------------  BALANCE   -------------------------------------------------
 function actualizarResumen(operaciones) {
   let totalGanancias = 0;
   let totalGastos = 0;
@@ -831,3 +852,4 @@ function getMesAnio(mes) {
 
 
 document.addEventListener("DOMContentLoaded", generarReporte);
+
