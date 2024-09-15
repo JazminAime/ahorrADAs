@@ -262,16 +262,27 @@
     </section>
 </section>
 <!-- REPORTES -->
- <section id="vista-reportes" class="hidden flex items-center justify-center pt-20 px-4">
-    <div id="contenedor-reporte" class="w-full md:w-2/3 lg:w-1/2 flex flex-col bg-white rounded-lg shadow-lg shadow-purple-500/50 p-8 mb-10">
-        <p class="text-4xl font-bold">Reportes</p>
-        <figure>
-            <img id="img-sin-reportes" src="./img/report.png" alt="reportes-section-img" class="hidden">
-        </figure>
-        <p class="mb-3 text-3xl text-center font-medium">Operaciones insuficientes</p>
-        <p class="mb-4 text-lg text-center">Prueba agregando más operaciones</p>
+<section class="hidden flex items-center justify-center pt-20 px-4" id="vista-reportes">
+  <div class="w-full md:w-2/3 lg:w-1/2 flex flex-col bg-white rounded-lg shadow-lg shadow-purple-500/50 p-8 mb-10">
+    <div class="flex justify-center">
+      <div class="w-full max-w-4xl">
+          <h2 class="text-4xl font-bold">Reportes</h2>
+          <!-- Mensaje de "Operaciones insuficientes" -->
+          <div id="sin-reportes">
+            <div class="my-6 py-6 text-center">
+              <figure class="mb-4">
+                <img src="/img/report.png" alt="Operaciones insuficientes" />
+              </figure>
+              <h4 class="mb-3 text-3xl text-center font-medium"> Operaciones insuficientes</h4>
+              <p class="mb-4 text-lg text-center">Prueba agregando más operaciones</p>
+            </div>
+          </div>
+          <!-- Contenedor donde se mostrarán los reportes -->
+          <div id="contenedor-reporte"></div>
+      </div>
     </div>
- </section>
+  </div>
+</section>
     <script src="main.js"></script>
 </body>
 </html>

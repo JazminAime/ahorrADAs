@@ -630,6 +630,19 @@ function generarReporte() {
   const operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
   const categorias = JSON.parse(localStorage.getItem("categorias")) || [];
 
+  const sinReportes = document.getElementById("sin-reportes");
+  const contenedorReporte = document.getElementById("contenedor-reporte");
+
+  // Si no hay operaciones, muestra el mensaje de "Operaciones insuficientes"
+  if (operaciones.length === 0) {
+    sinReportes.classList.remove("hidden");
+    contenedorReporte.innerHTML = "";
+    return; 
+  } else {
+    sinReportes.classList.add("hidden"); 
+  }
+
+
   let resumen = {
     categoriaMayorGanancia: { nombre: "", ganancia: 0 },
     categoriaMayorGasto: { nombre: "", gasto: 0 },
@@ -700,7 +713,7 @@ function mostrarReporte(resumen, totalesPorCategoria, totalesPorMes) {
   contenedorReporte.innerHTML = "";
 
   const resumenHtml = `
-  <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-md mb-8">
+  <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-md mb-8 mt-6">
       <h3 class="text-xl font-semibold mb-4">Resumen</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 text-sm">
           <p class="font-semibold">Categoría con mayor ganancia</p>
