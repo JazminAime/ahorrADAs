@@ -309,6 +309,7 @@ function agregarOperacion() {
   localStorage.setItem("operaciones", JSON.stringify(operaciones));
 
   mostrarOperaciones();
+  generarReporte();
 
   // Limpiar campos
   document.getElementById("descripcion-operacion").value = "";
