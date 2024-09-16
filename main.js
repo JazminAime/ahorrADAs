@@ -176,7 +176,9 @@ function mostrarCategoria() {
     editButton.addEventListener("click", function () {
       mostrarSeccion(editCategoria);
       const nombreCategoriaExistente = categorias[i];
-      const editarCategoriaInput = document.getElementById("editar-categoria-nombre");
+      const editarCategoriaInput = document.getElementById(
+        "editar-categoria-nombre"
+      );
       editarCategoriaInput.value = nombreCategoriaExistente;
 
       const confirmarEditar = document.getElementById("confirm-edit");
@@ -187,20 +189,21 @@ function mostrarCategoria() {
           categorias[i] = nuevoNombre;
           localStorage.setItem("categorias", JSON.stringify(categorias));
 
-           // Actualizar las categorías en las operaciones
-           let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
-           operaciones = operaciones.map(op => {
-             if (op.categoriaOperacion === nombreCategoriaExistente) {
-               op.categoriaOperacion = nuevoNombre;
-             }
-             return op;
-           });
-           localStorage.setItem("operaciones", JSON.stringify(operaciones));
- 
-           mostrarCategoria();
-           mostrarSeccion(categoriasSec);
-           generarReporte();
-           mostrarOperaciones();
+          // Actualizar las categorías en las operaciones
+          let operaciones =
+            JSON.parse(localStorage.getItem("operaciones")) || [];
+          operaciones = operaciones.map((op) => {
+            if (op.categoriaOperacion === nombreCategoriaExistente) {
+              op.categoriaOperacion = nuevoNombre;
+            }
+            return op;
+          });
+          localStorage.setItem("operaciones", JSON.stringify(operaciones));
+
+          mostrarCategoria();
+          mostrarSeccion(categoriasSec);
+          generarReporte();
+          mostrarOperaciones();
         }
       });
     });
@@ -216,24 +219,26 @@ function mostrarCategoria() {
 
     deleteButton.addEventListener("click", function () {
       const categoriaAEliminar = categorias[i];
-    
+
       // Mostrar ventana de confirmación
-      const confirmacion = confirm(`¿Estás seguro de que quieres eliminar la categoría "${categoriaAEliminar}"?`);
-    
+      const confirmacion = confirm(
+        `¿Estás seguro de que quieres eliminar la categoría "${categoriaAEliminar}"?`
+      );
+
       if (confirmacion) {
         // Eliminar la categoría
         categorias = categorias.filter(
           (categoria) => categoria !== categoriaAEliminar
         );
         localStorage.setItem("categorias", JSON.stringify(categorias));
-    
+
         // Eliminar las operaciones relacionadas
         let operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
         operaciones = operaciones.filter(
           (operacion) => operacion.categoriaOperacion !== categoriaAEliminar
         );
         localStorage.setItem("operaciones", JSON.stringify(operaciones));
-    
+
         mostrarOperaciones();
         mostrarCategoria();
       }
@@ -435,8 +440,12 @@ function mostrarOperaciones(operaciones = null) {
           document.getElementById("editar-op-btn");
 
         confirmarEditarOperacion.addEventListener("click", function () {
-          const nuevaDescripcion = document.getElementById("descripcion-edit-op").value;
-          const nuevoMonto = parseFloat(document.getElementById("monto-edit-op").value);
+          const nuevaDescripcion = document.getElementById(
+            "descripcion-edit-op"
+          ).value;
+          const nuevoMonto = parseFloat(
+            document.getElementById("monto-edit-op").value
+          );
           const nuevoTipo = document.getElementById("tipo-edit-op").value;
           const nuevaCategoria = document.getElementById(
             "select-categoria-edit"
@@ -463,23 +472,24 @@ function mostrarOperaciones(operaciones = null) {
       botonEliminar.textContent = "Eliminar";
       botonEliminar.className = "text-red-500 hover:underline text-xs";
       botonEliminar.addEventListener("click", function () {
-
         // Obtener la descripción y la categoría de la operación
-      const descripcionOperacion = operaciones[index].descripcionOperacion;
-      const categoriaOperacion = operaciones[index].categoriaOperacion;
+        const descripcionOperacion = operaciones[index].descripcionOperacion;
+        const categoriaOperacion = operaciones[index].categoriaOperacion;
 
-      // Mostrar mensaje de confirmación con la descripción y la categoría
-      const confirmar = confirm(`¿Estás seguro de que quieres eliminar la operación?\n\nDescripción: ${descripcionOperacion}\nCategoría: ${categoriaOperacion}`);
+        // Mostrar mensaje de confirmación con la descripción y la categoría
+        const confirmar = confirm(
+          `¿Estás seguro de que quieres eliminar la operación?\n\nDescripción: ${descripcionOperacion}\nCategoría: ${categoriaOperacion}`
+        );
 
-      if (confirmar) {
-        // Si el usuario confirma, eliminar la operación
-        operaciones.splice(index, 1);
-        localStorage.setItem("operaciones", JSON.stringify(operaciones));
-        mostrarOperaciones();
-        generarReporte();
-        actualizarResumen(operaciones); 
-      }
-      }); 
+        if (confirmar) {
+          // Si el usuario confirma, eliminar la operación
+          operaciones.splice(index, 1);
+          localStorage.setItem("operaciones", JSON.stringify(operaciones));
+          mostrarOperaciones();
+          generarReporte();
+          actualizarResumen(operaciones);
+        }
+      });
 
       acciones.appendChild(botonEditar);
       acciones.appendChild(botonEliminar);
@@ -609,6 +619,7 @@ document
   .getElementById("filtro-orden")
   .addEventListener("change", aplicarFiltros);
 
+// -------------------------------  BALANCE   -------------------------------------------------
 function actualizarResumen(operaciones) {
   let totalGanancias = 0;
   let totalGastos = 0;
@@ -659,11 +670,10 @@ function generarReporte() {
   if (operaciones.length === 0) {
     sinReportes.classList.remove("hidden");
     contenedorReporte.innerHTML = "";
-    return; 
+    return;
   } else {
-    sinReportes.classList.add("hidden"); 
+    sinReportes.classList.add("hidden");
   }
-
 
   let resumen = {
     categoriaMayorGanancia: { nombre: "", ganancia: 0 },
@@ -682,7 +692,12 @@ function generarReporte() {
   });
 
   operaciones.forEach((operacion) => {
-    const { categoriaOperacion, fechaOperacion, montoOperacion, tipoOperacion } = operacion;
+    const {
+      categoriaOperacion,
+      fechaOperacion,
+      montoOperacion,
+      tipoOperacion,
+    } = operacion;
     const [anio, mes] = fechaOperacion.split("-");
 
     if (!totalesPorMes[`${anio}-${mes}`]) {
@@ -702,19 +717,26 @@ function generarReporte() {
       totalesPorCategoria[categoriaOperacion].gasto;
 
     totalesPorMes[`${anio}-${mes}`].balance =
-      totalesPorMes[`${anio}-${mes}`].ganancia - totalesPorMes[`${anio}-${mes}`].gasto;
+      totalesPorMes[`${anio}-${mes}`].ganancia -
+      totalesPorMes[`${anio}-${mes}`].gasto;
   });
 
   // Calcular los máximos para el resumen
   Object.entries(totalesPorCategoria).forEach(([categoria, totales]) => {
     if (totales.ganancia > resumen.categoriaMayorGanancia.ganancia) {
-      resumen.categoriaMayorGanancia = { nombre: categoria, ganancia: totales.ganancia };
+      resumen.categoriaMayorGanancia = {
+        nombre: categoria,
+        ganancia: totales.ganancia,
+      };
     }
     if (totales.gasto > resumen.categoriaMayorGasto.gasto) {
       resumen.categoriaMayorGasto = { nombre: categoria, gasto: totales.gasto };
     }
     if (totales.balance > resumen.categoriaMayorBalance.balance) {
-      resumen.categoriaMayorBalance = { nombre: categoria, balance: totales.balance };
+      resumen.categoriaMayorBalance = {
+        nombre: categoria,
+        balance: totales.balance,
+      };
     }
   });
 
@@ -740,28 +762,48 @@ function mostrarReporte(resumen, totalesPorCategoria, totalesPorMes) {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 text-sm">
           <p class="font-semibold">Categoría con mayor ganancia</p>
           <div class="border-b border-gray-300 md:border-b-0 flex items-center justify-between space-x-2">
-              <span class="italic w-auto text-center font-medium text-purple-600">${resumen.categoriaMayorGanancia.nombre}</span>
-              <span class="text-green-600 font-bold ml-4">+$${resumen.categoriaMayorGanancia.ganancia}</span>
+              <span class="italic w-auto text-center font-medium text-purple-600">${
+                resumen.categoriaMayorGanancia.nombre
+              }</span>
+              <span class="text-green-600 font-bold ml-4">+$${
+                resumen.categoriaMayorGanancia.ganancia
+              }</span>
           </div>
           <p class="font-semibold">Categoría con mayor gasto</p>
           <div class="border-b border-gray-300 md:border-b-0 flex items-center justify-between space-x-2">
-              <span class="italic w-auto text-center font-medium text-purple-600">${resumen.categoriaMayorGasto.nombre}</span>
-              <span class="text-red-600 font-bold ml-4">-$${resumen.categoriaMayorGasto.gasto}</span>
+              <span class="italic w-auto text-center font-medium text-purple-600">${
+                resumen.categoriaMayorGasto.nombre
+              }</span>
+              <span class="text-red-600 font-bold ml-4">-$${
+                resumen.categoriaMayorGasto.gasto
+              }</span>
           </div>
           <p class="font-semibold">Categoría con mayor balance</p>
           <div class="border-b border-gray-300 md:border-b-0 flex items-center justify-between space-x-2">
-              <span class="italic w-auto text-center font-medium text-purple-600">${resumen.categoriaMayorBalance.nombre}</span>
-              <span class="font-bold ml-4">$${resumen.categoriaMayorBalance.balance}</span>
+              <span class="italic w-auto text-center font-medium text-purple-600">${
+                resumen.categoriaMayorBalance.nombre
+              }</span>
+              <span class="font-bold ml-4">$${
+                resumen.categoriaMayorBalance.balance
+              }</span>
           </div>
           <p class="font-semibold">Mes con mayor ganancia</p>
           <div class="border-b border-gray-300 md:border-b-0 flex items-center justify-between space-x-2">
-              <span class="text-gray-500">${getMesAnio(resumen.mesMayorGanancia.nombre)}</span>
-              <span class="text-green-600 font-bold ml-4">+$${resumen.mesMayorGanancia.ganancia}</span>
+              <span class="text-gray-500">${getMesAnio(
+                resumen.mesMayorGanancia.nombre
+              )}</span>
+              <span class="text-green-600 font-bold ml-4">+$${
+                resumen.mesMayorGanancia.ganancia
+              }</span>
           </div>
           <p class="font-semibold">Mes con mayor gasto</p>
           <div class="border-b border-gray-300 md:border-b-0 flex items-center justify-between space-x-2">
-              <span class="text-gray-500">${getMesAnio(resumen.mesMayorGasto.nombre)}</span>
-              <span class="text-red-600 font-bold ml-4">-$${resumen.mesMayorGasto.gasto}</span>
+              <span class="text-gray-500">${getMesAnio(
+                resumen.mesMayorGasto.nombre
+              )}</span>
+              <span class="text-red-600 font-bold ml-4">-$${
+                resumen.mesMayorGasto.gasto
+              }</span>
           </div>
       </div>
   </div>
@@ -769,9 +811,9 @@ function mostrarReporte(resumen, totalesPorCategoria, totalesPorMes) {
   // Filtrar las categorías que tienen operaciones (ganancias o gastos)
   const categoriasConOperaciones = Object.keys(totalesPorCategoria).filter(
     (categoria) =>
-      totalesPorCategoria[categoria].ganancia > 0 || totalesPorCategoria[categoria].gasto > 0
+      totalesPorCategoria[categoria].ganancia > 0 ||
+      totalesPorCategoria[categoria].gasto > 0
   );
-
 
   let totalesCategoriaHtml = `
   <h3 class="text-xl font-semibold mb-4">Totales por categorías</h3>
@@ -796,7 +838,11 @@ function mostrarReporte(resumen, totalesPorCategoria, totalesPorMes) {
           <td class="border px-4 py-2">${categoria}</td>
           <td class="border px-4 py-2 text-green-600">+$${totales.ganancia}</td>
           <td class="border px-4 py-2 text-red-600">-$${totales.gasto}</td>
-          <td class="border px-4 py-2">${totales.balance >= 0 ? '$' + totales.balance : '-$' + Math.abs(totales.balance)}</td>
+          <td class="border px-4 py-2">${
+            totales.balance >= 0
+              ? "$" + totales.balance
+              : "-$" + Math.abs(totales.balance)
+          }</td>
       </tr>
     `;
   });
@@ -823,14 +869,18 @@ function mostrarReporte(resumen, totalesPorCategoria, totalesPorMes) {
   `;
 
   Object.entries(totalesPorMes).forEach(([mes, totales]) => {
-      const mesAnio = getMesAnio(mes);
+    const mesAnio = getMesAnio(mes);
 
-      totalesMesHtml += `
+    totalesMesHtml += `
       <tr>
           <td class="border px-4 py-2">${mesAnio}</td>
           <td class="border px-4 py-2 text-green-600">+$${totales.ganancia}</td>
           <td class="border px-4 py-2 text-red-600">-$${totales.gasto}</td>
-          <td class="border px-4 py-2">${totales.balance >= 0 ? '$' + totales.balance : '-$' + Math.abs(totales.balance)}</td>
+          <td class="border px-4 py-2">${
+            totales.balance >= 0
+              ? "$" + totales.balance
+              : "-$" + Math.abs(totales.balance)
+          }</td>
       </tr>
       `;
   });
@@ -841,15 +891,16 @@ function mostrarReporte(resumen, totalesPorCategoria, totalesPorMes) {
   </div>
   `;
 
-  contenedorReporte.innerHTML = resumenHtml + totalesCategoriaHtml + totalesMesHtml;
+  contenedorReporte.innerHTML =
+    resumenHtml + totalesCategoriaHtml + totalesMesHtml;
 }
 
 function getMesAnio(mes) {
   const [anio, mesNum] = mes.split("-");
-  const mesNombre = new Date(anio, mesNum - 1).toLocaleString('es-ES', { month: 'long' });
+  const mesNombre = new Date(anio, mesNum - 1).toLocaleString("es-ES", {
+    month: "long",
+  });
   return `${mesNombre} ${anio}`;
 }
 
-
 document.addEventListener("DOMContentLoaded", generarReporte);
-
