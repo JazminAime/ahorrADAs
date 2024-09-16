@@ -188,9 +188,22 @@ function mostrarCategoria() {
         if (nuevoNombre !== "") {
           categorias[i] = nuevoNombre;
           localStorage.setItem("categorias", JSON.stringify(categorias));
+
+          // Actualizar las categorías en las operaciones
+          let operaciones =
+            JSON.parse(localStorage.getItem("operaciones")) || [];
+          operaciones = operaciones.map((op) => {
+            if (op.categoriaOperacion === nombreCategoriaExistente) {
+              op.categoriaOperacion = nuevoNombre;
+            }
+            return op;
+          });
+          localStorage.setItem("operaciones", JSON.stringify(operaciones));
+
           mostrarCategoria();
           mostrarSeccion(categoriasSec);
           generarReporte();
+          mostrarOperaciones();
         }
       });
     });
@@ -267,6 +280,7 @@ buttonAggCategorias.addEventListener("click", agregarCategorias);
 
 // Agregar, editar y eliminar operaciones
 function agregarOperacion() {
+  const idOperacion = `op-${new Date().getTime()}`; // Generar un ID único basado en la fecha y hora actuales
   const descripcionOperacion = document.getElementById(
     "descripcion-operacion"
   ).value;
@@ -280,6 +294,7 @@ function agregarOperacion() {
   const tipoOperacion = document.getElementById("tipo-operacion").value;
 
   const operacion = {
+    id: idOperacion, // Asignar el ID único
     descripcionOperacion,
     categoriaOperacion,
     fechaOperacion,
@@ -294,7 +309,6 @@ function agregarOperacion() {
   localStorage.setItem("operaciones", JSON.stringify(operaciones));
 
   mostrarOperaciones();
-  generarReporte();
 
   // Limpiar campos
   document.getElementById("descripcion-operacion").value = "";
@@ -303,6 +317,10 @@ function agregarOperacion() {
   document.getElementById("categoria-operacion").value = "";
   document.getElementById("fecha-operacion").value = "";
 }
+
+const obtenerOperacion = (idOperacion, operaciones) => {
+  return operaciones.find((operacion) => operacion.id === idOperacion);
+};
 
 function mostrarOperaciones(operaciones = null) {
   const sinOperaciones = document.getElementById("sin-operaciones");
@@ -420,6 +438,7 @@ function mostrarOperaciones(operaciones = null) {
         // Modificar valores
         const confirmarEditarOperacion =
           document.getElementById("editar-op-btn");
+
         confirmarEditarOperacion.addEventListener("click", function () {
           const nuevaDescripcion = document.getElementById(
             "descripcion-edit-op"
@@ -468,6 +487,7 @@ function mostrarOperaciones(operaciones = null) {
           localStorage.setItem("operaciones", JSON.stringify(operaciones));
           mostrarOperaciones();
           generarReporte();
+          actualizarResumen(operaciones);
         }
       });
 
@@ -566,7 +586,6 @@ function aplicarFiltros() {
   } else {
     mostrarOperacion();
   }
-  generarReporte(); // Actualizar reporte después de aplicar filtros
 }
 
 // Inicializar filtros al cargar la página
@@ -643,6 +662,18 @@ function actualizarResumen(operaciones) {
 function generarReporte() {
   const operaciones = JSON.parse(localStorage.getItem("operaciones")) || [];
   const categorias = JSON.parse(localStorage.getItem("categorias")) || [];
+
+  const sinReportes = document.getElementById("sin-reportes");
+  const contenedorReporte = document.getElementById("contenedor-reporte");
+
+  // Si no hay operaciones, muestra el mensaje de "Operaciones insuficientes"
+  if (operaciones.length === 0) {
+    sinReportes.classList.remove("hidden");
+    contenedorReporte.innerHTML = "";
+    return;
+  } else {
+    sinReportes.classList.add("hidden");
+  }
 
   let resumen = {
     categoriaMayorGanancia: { nombre: "", ganancia: 0 },
@@ -726,7 +757,7 @@ function mostrarReporte(resumen, totalesPorCategoria, totalesPorMes) {
   contenedorReporte.innerHTML = "";
 
   const resumenHtml = `
-  <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-md mb-8">
+  <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-md mb-8 mt-6">
       <h3 class="text-xl font-semibold mb-4">Resumen</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 text-sm">
           <p class="font-semibold">Categoría con mayor ganancia</p>
